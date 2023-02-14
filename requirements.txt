@@ -1,0 +1,14 @@
+# Function dependencies, for example:
+# package>=version
+requests
+pandas
+google-cloud-bigquery
+google-cloud-bigquery-storage
+google-cloud-core
+numpy
+db-dtypes
+colorama
+
+#api serving
+fastapi
+uvicorn
