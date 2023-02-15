@@ -8,21 +8,21 @@ build_image:
 run_image:
 	@docker run -p 8080:8080 --env-file .env --name=$(CONTAINER_NAME) eu.gcr.io/whaly-x-the-moneytizer/reketor:dev
 
-make build_prod:
+build_prod:
 	@docker build --platform=amd64 -t eu.gcr.io/whaly-x-the-moneytizer/reketor:prod .
 
-make push_prod:
+push_prod:
 	@docker push eu.gcr.io/whaly-x-the-moneytizer/reketor:prod
 
-make deploy_prod:
+deploy_prod:
 	@gcloud run deploy --image eu.gcr.io/whaly-x-the-moneytizer/reketor:prod \
 										--region europe-west1 \
 										--memory 2Gi \
 										--env-vars-file .env.yaml \
-										--project $(PROJECT)
+										--project $(PROJECT) \
 										--service-account $(SERVICE_ACCOUNT)
 
-make restart:
+restart:
 	@make clean_container
 	@make build_image
 	@make run_image
