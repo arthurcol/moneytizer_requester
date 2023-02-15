@@ -9,7 +9,7 @@ from colorama import Fore, Style
 from google.cloud import bigquery
 from numpy import NaN
 
-from params import DATASET, PROJECT, PSI_API_KEY, TABLE, TABLE_TO
+from params import DATASET, PROJECT, TABLE_TO
 
 
 # Function to retrieve data from page speed insights API
