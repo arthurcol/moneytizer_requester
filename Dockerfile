@@ -10,4 +10,7 @@ COPY params.py params.py
 
 COPY api.py api.py
 
+# ONLY FOR LOCAL DEV
+COPY whaly-x-the-moneytizer-cee99044bb29.json gcpkey.json
+
 CMD uvicorn api:app --port=$PORT --host 0.0.0.0
