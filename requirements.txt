@@ -12,3 +12,4 @@ colorama
 #api serving
 fastapi
 uvicorn
+python-multipart

@@ -2,7 +2,8 @@ import requests
 import pandas as pd
 import numpy as np
 from google.cloud import bigquery
-from params import PSI_API_KEY, PROJECT, DATASET, TABLE, TABLE_TO, PSI_API_KEY_1, PSI_API_KEY_2, PSI_API_KEY_3
+from google.oauth2 import service_account
+from params import PSI_API_KEY, PROJECT, DATASET, TABLE, TABLE_TO, PSI_API_KEY_1, PSI_API_KEY_2, PSI_API_KEY_3,gcp_key
 import json
 from numpy import NaN
 import random
@@ -15,9 +16,6 @@ from typing import List
 
 # Function to retrieve data from page speed insights API
 def page_speed_insight_kpis(site, key):
-
-    # API key. To change if out
-    key = key
 
     # API request
     url_api = f'https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url={site}&key={key}'
@@ -100,8 +98,6 @@ def page_speed_insight_kpis(site, key):
     }
 
     return pd.DataFrame(dict_kpis)
-
-    # print(pd.DataFrame(dict_kpis))
 
 
 
@@ -188,17 +184,21 @@ def get_data_from_similar(url):
     return new_data
 
 # Function to enrich the data, take from BigQuery and return to another BigQuery table
-async def enrich_data_with_psi_api(site_url,api_key):
+def enrich_data_with_psi_api(site_url,api_key):
 
     # request both api and merge
-    psi_df = await page_speed_insight_kpis(site_url,api_key)
-    sw_df = await get_data_from_similar(site_url,api_key)
+    psi_df = page_speed_insight_kpis(site_url,api_key)
+    sw_df = get_data_from_similar(site_url)
     sw_psi_df = pd.merge(psi_df, sw_df, on='site_url', how='left')
 
     return sw_psi_df
 
 
+
 def save_enriched_url_to_bq(enriched_df):
+    #test locally
+    # client = bigquery.Client.from_service_account_info(gcp_key)
+    #for prod
     client = bigquery.Client()
     table_to_send_to = f"{PROJECT}.{DATASET}.{TABLE_TO}"
     write_mode = "WRITE_APPEND"

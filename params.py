@@ -2,7 +2,7 @@
 use_case_tmz model package params
 update the environment variables in the '.env'
 """
-
+import json
 import os
 
 PROJECT = os.environ.get("PROJECT")

@@ -26,13 +26,14 @@ def index():
 
 
 @app.get('/simple_query')
-async def query(url,return_results_only=False):
+def query(url,return_results_only:bool=False):
     key = choose_api_key(app.state.keys)
-    enriched_df = await enrich_data_with_psi_api(site_url=url,
+    enriched_df = enrich_data_with_psi_api(site_url=url,
                                         api_key=key)
 
     if return_results_only:
-        return enriched_df.to_json()
+        print("hello")
+        return enriched_df.to_json(orient='records')
 
     save_enriched_url_to_bq(enriched_df=enriched_df)
 
@@ -41,7 +42,7 @@ async def query(url,return_results_only=False):
 
 @app.post('/query_csv')
 async def querytator(csv_file: UploadFile=File(...)):
-    contents = csv_file.file.read()
+    contents = await csv_file.file.read()
     buffer = StringIO(contents.decode('utf-8'))
     csvReader = csv.DictReader(buffer)
     if 'url' not in csvReader.fieldnames:
@@ -52,9 +53,9 @@ async def querytator(csv_file: UploadFile=File(...)):
         url = row[url]
         key = choose_api_key(app.state.keys)
         try:
-            enriched_df = await enrich_data_with_psi_api(site_url=url,
+            enriched_df = enrich_data_with_psi_api(site_url=url,
                                             api_key=key)
-            await save_enriched_url_to_bq(enriched_df=enriched_df)
+            save_enriched_url_to_bq(enriched_df=enriched_df)
             print(f"{url} has been enriched and loaded to BQ")
             logs['sucess'].append(url)
         except:

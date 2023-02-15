@@ -1,2 +1,7 @@
 .env
 .python-version
+__pycache__/
+.json
+*.json
+.ipynb_checkpoints/
+*.ipynb
